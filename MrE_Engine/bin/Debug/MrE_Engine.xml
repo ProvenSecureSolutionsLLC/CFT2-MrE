@@ -1,0 +1,888 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>MrE_Engine</name>
+    </assembly>
+    <members>
+        <member name="T:MrE_Engine.MrEHelper">
+            <summary>
+            SimpleRNG is a simple random number generator based on 
+            George Marsaglia's MWC (multiply with carry) generator.
+            Although it is very simple, it passes Marsaglia's DIEHARD
+            series of random number generator tests.
+            
+            Written by John D. Cook 
+            http://www.johndcook.com
+            </summary>
+        </member>
+        <member name="F:MrE_Engine.MrEHelper.Sqrt2Pi">
+            <summary>
+            Sqrt of 2Pi as in Gaussian distribution
+            </summary>
+        </member>
+        <member name="F:MrE_Engine.MrEHelper.GOLDENRATIO">
+            <summary>
+            The best guess used for approximate "Markvo chain of Monte Carlo"
+            when converging to a solution of Lagrange multipliers set
+            </summary>
+        </member>
+        <member name="F:MrE_Engine.MrEHelper.MAXNUMBEROFVARIABLES">
+            <summary>
+            Defines the maximum number of variables supported by Maximum relative Entropy engine
+            </summary>
+        </member>
+        <member name="F:MrE_Engine.MrEHelper.MAXNUMBEROFCONSTRAINTS">
+            <summary>
+            Defines the maximum number of constraint functions supported by Maximum relative Entropy engine
+            </summary>
+        </member>
+        <member name="F:MrE_Engine.MrEHelper.MAXNUMBEROFSIGMAPOINTS">
+            <summary>
+            Defines the maximum number of Sigma points supported by Maximum relative Entropy engine
+            </summary>
+        </member>
+        <member name="M:MrE_Engine.MrEHelper.#cctor">
+            <summary>
+            Constructor
+            </summary>
+        </member>
+        <member name="M:MrE_Engine.MrEHelper.SetSeed(System.UInt32,System.UInt32)">
+            <summary>
+            The random generator seed can be set three ways:
+            1) specifying two non-zero unsigned integers
+            2) specifying one non-zero unsigned integer and taking a default value for the second
+            3) setting the seed from the system time
+            </summary>
+            <param name="u">u value for seed</param>
+            <param name="v">v value for seed</param>
+        </member>
+        <member name="M:MrE_Engine.MrEHelper.SetSeed(System.UInt32)">
+            <summary>
+            Set Seed
+            </summary>
+            <param name="u">u value for seed</param>
+        </member>
+        <member name="M:MrE_Engine.MrEHelper.SetSeedFromSystemTime">
+            <summary>
+            Set seed from system time
+            </summary>
+        </member>
+        <member name="M:MrE_Engine.MrEHelper.GetUniform">
+            <summary>
+            Produce a uniform random sample from the open interval (0, 1).
+            The method will not return either end point.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MrE_Engine.MrEHelper.GetUint">
+            <summary>
+            This is the heart of the generator.
+            It uses George Marsaglia's MWC algorithm to produce an unsigned integer.
+            See http://www.bobwheeler.com/statistics/Password/MarsagliaPost.txt
+            </summary>
+            <returns>Generated unsigned integer</returns>
+        </member>
+        <member name="M:MrE_Engine.MrEHelper.GetNormal">
+            <summary>
+            Get normal (Gaussian) random sample with mean 0 and standard deviation 1.
+            Uses Box-Muller algorithm.
+            </summary>
+            <returns>Generated random variable</returns>
+        </member>
+        <member name="M:MrE_Engine.MrEHelper.GetNormal(System.Double,System.Double)">
+            <summary>
+            Get normal (Gaussian) random sample with specified mean and standard deviation
+            </summary>
+            <param name="mean">The mean of normal distribution</param>
+            <param name="standardDeviation">Standard deviation of normal distribution. Must be positive.</param>
+            <returns>Generated Gaussian distribution value</returns>
+        </member>
+        <member name="M:MrE_Engine.MrEHelper.GetExponential">
+            <summary>
+            Get exponential random sample with mean 1
+            </summary>
+            <returns>Generated exponential random sample value</returns>
+        </member>
+        <member name="M:MrE_Engine.MrEHelper.GetExponential(System.Double)">
+            <summary>
+            Get exponential random sample with specified mean
+            </summary>
+            <param name="mean">The mean of exponential random sample.Mean must be positive.</param>
+            <returns>Generated exponential random sample value</returns>
+        </member>
+        <member name="M:MrE_Engine.MrEHelper.GetGamma(System.Double,System.Double)">
+            <summary>
+            Implementation based on "A Simple Method for Generating Gamma Variables"
+            by George Marsaglia and Wai Wan Tsang.  ACM Transactions on Mathematical Software
+            Vol 26, No 3, September 2000, pages 363-372.
+            </summary>
+            <param name="shape">Shape parameter</param>
+            <param name="scale">Scale parameter</param>
+            <returns>Generated Gamma random variable value</returns>
+        </member>
+        <member name="M:MrE_Engine.MrEHelper.GetChiSquare(System.Double)">
+            <summary>
+            A chi squared distribution with n degrees of freedom
+            is a gamma distribution with shape n/2 and scale 2.
+            </summary>
+            <param name="degreesOfFreedom">The degree of freedom</param>
+            <returns>Generated ChiSquare random variable value</returns>
+        </member>
+        <member name="M:MrE_Engine.MrEHelper.GetInverseGamma(System.Double,System.Double)">
+            <summary>
+            If X is gamma(shape, scale) then
+            1/Y is inverse gamma(shape, 1/scale)
+            </summary>
+            <param name="shape">Shape parameter</param>
+            <param name="scale">Scale parameter</param>
+            <returns>Generated InverseGamma random variable value</returns>
+        </member>
+        <member name="M:MrE_Engine.MrEHelper.GetWeibull(System.Double,System.Double)">
+            <summary>
+            Shape and scale parameters must be positive.
+            </summary>
+            <param name="shape">Shape parameter</param>
+            <param name="scale">Scale parameter</param>
+            <returns>Generated Weibull random variable value</returns>
+        </member>
+        <member name="M:MrE_Engine.MrEHelper.GetCauchy(System.Double,System.Double)">
+            <summary>
+            Gets Cauchy random variable value
+            </summary>
+            <param name="median">Median</param>
+            <param name="scale">Scale parameter. Must be positive.</param>
+            <returns>Generated Cauchy random variable value</returns>
+        </member>
+        <member name="M:MrE_Engine.MrEHelper.GetStudentT(System.Double)">
+            <summary>
+            Implemented using Seminumerical Algorithms by Knuth
+            </summary>
+            <param name="degreesOfFreedom">Degrees of freedom.Must be positive.</param>
+            <returns>Generated Student random variable value</returns>
+        </member>
+        <member name="M:MrE_Engine.MrEHelper.GetLaplace(System.Double,System.Double)">
+            <summary>
+            The Laplace distribution is also known as the double exponential distribution.
+            </summary>
+            <param name="mean">Mean parameter</param>
+            <param name="scale">Scale parameter</param>
+            <returns>Generated Laplace random variable value</returns>
+        </member>
+        <member name="M:MrE_Engine.MrEHelper.GetLogNormal(System.Double,System.Double)">
+            <summary>
+            Gets LogNormal random variable svalue
+            </summary>
+            <param name="mu">Mu parameter</param>
+            <param name="sigma">Sigma parameter</param>
+            <returns>Generated LogNormal random variables value</returns>
+        </member>
+        <member name="M:MrE_Engine.MrEHelper.GetBeta(System.Double,System.Double)">
+            <summary>
+            There are more efficient methods for generating beta samples.
+            However such methods are a little more efficient and much more complicated.
+            For an explanation of why the following method works, see
+            http://www.johndcook.com/distribution_chart.html#gamma_beta
+            </summary>
+            <param name="a">a parameter, must be positive.</param>
+            <param name="b">b parameter, must be positive.</param>
+            <returns>Generated Beta random variable value</returns>
+        </member>
+        <member name="T:MrE_Engine.IProbabilityDistribution">
+            <summary>
+            Interface IProbabilityDistribution
+            </summary>
+        </member>
+        <member name="M:MrE_Engine.IProbabilityDistribution.TryGetProbabilityDensityAt(System.Collections.Generic.List{System.Double},System.Double@)">
+            <summary>
+            TryGetProbabilityDensityAt method
+            </summary>
+            <param name="variables_values">The list of multivariate random vector coordinates</param>
+            <param name="density_value">The probability density value to be returned</param>
+            <returns>True when successfull</returns>
+        </member>
+        <member name="T:MrE_Engine.MrEExample10VariateGaussianCovarianceConstraint">
+            <summary>
+            An MrE example class for any covariance constraint between two variables
+            </summary>
+        </member>
+        <member name="T:MrE_Engine.CustomConstraintBase">
+            <summary>
+            A base class for MrE constraint function equation
+            </summary>
+        </member>
+        <member name="T:MrE_Engine.IVariablesConstraint">
+            <summary>
+            IvariablesConstraint interface
+            </summary>
+        </member>
+        <member name="M:MrE_Engine.IVariablesConstraint.TryGetConstraintValueAt(System.Collections.Generic.List{System.Double},System.Double@)">
+            <summary>
+            TryGetConstraintValueAt method
+            </summary>
+            <param name="variables_values">The list of multivariate random vector coordinates</param>
+            <param name="constraint_value">The constraint value to be returned</param>
+            <returns>True when successfull</returns>
+        </member>
+        <member name="M:MrE_Engine.CustomConstraintBase.#ctor">
+            <summary>
+            Constructor for CustomConstraintBase
+            </summary>
+        </member>
+        <member name="M:MrE_Engine.CustomConstraintBase.MrE_Engine#IVariablesConstraint#TryGetConstraintValueAt(System.Collections.Generic.List{System.Double},System.Double@)">
+            <summary>
+            TryGetConstraintValueAt returns the constraint function value at a given multivariate data point.
+            The default return value in this base class is zero (0).
+            MrE engine assumes that all constraints are equal to zeros, 
+            i.e. normalized so that right side of the constraining function equation is zero (0).
+            E.g. x+2*y-3=0 is a normalized form, while the same constraint's form
+            x+2*y=0 is un-normalized and is not supported.
+            </summary>
+            <param name="variables_values">The list of multivariate random vector coordinates</param>
+            <param name="constraint_value">The constraint value to be returned</param>
+            <returns>True when successfull</returns>
+        </member>
+        <member name="M:MrE_Engine.CustomConstraintBase.TryGetConstraintValueAt(System.Collections.Generic.List{System.Double},System.Double@)">
+            <summary>
+            TryGetConstraintValueAt returns the constraint function value at a given multivariate data point.
+            The default return value in this base class is zero (0).
+            MrE engine assumes that all constraints are equal to zeros, 
+            i.e. normalized so that right side of the constraining function equation is zero (0).
+            E.g. x+2*y-3=0 is a normalized form, while the same constraint's form
+            x+2*y=0 is un-normalized and is not supported.
+            </summary>
+            <param name="variables_values">The list of multivariate random vector coordinates</param>
+            <param name="constraint_value">The constraint value to be returned</param>
+            <returns>True when successfull</returns>
+        </member>
+        <member name="M:MrE_Engine.CustomConstraintBase.ReplaceConstraintValueAtExisting(System.Int32,System.Double)">
+            <summary>
+            Replace existing cache with new information
+            </summary>
+            <param name="index">Index of existing sigma point item</param>
+            <param name="constraint_value">A constraint value to replace with</param>
+        </member>
+        <member name="M:MrE_Engine.CustomConstraintBase.AppendConstraintValueAtNewSigmaPoint(System.Double)">
+            <summary>
+            Appends a new constraint value at a new sigma point
+            </summary>
+            <param name="constraint_value">A constraint value to append</param>
+        </member>
+        <member name="M:MrE_Engine.CustomConstraintBase.AppendSigmaPoint(MrE_Engine.SigmaPoint,System.Double@)">
+            <summary>
+            Appends an information for a new sigma point. 
+            Recalculates constraints values.
+            </summary>
+            <param name="sigma_point">An instance of a new sigma point</param>
+            <param name="constraint_value">The constraint value to be returned</param>
+            <returns>True when successfull, else at least one constraint value was NaN</returns>
+        </member>
+        <member name="P:MrE_Engine.CustomConstraintBase.SparsityNegativeVersusPositive">
+            <summary>
+            Sparsity over constraint function setpoint which is assumed 0 in MrE.
+            Every negative constraint value decrements this property.
+            Every positive constraint value increments this property.
+            </summary>
+        </member>
+        <member name="P:MrE_Engine.CustomConstraintBase.Values_at_sigma_points">
+            <summary>
+            Constraint value at sigma points
+            </summary>
+        </member>
+        <member name="P:MrE_Engine.CustomConstraintBase.IsValid">
+            <summary>
+            Is this constraint valid based on existing sigma points?
+            </summary>
+        </member>
+        <member name="P:MrE_Engine.CustomConstraintBase.LagrangeMultiplierValue">
+            <summary>
+            After MrE engine execution this property is filled with
+            optimal Lagrange multiplier values, which maximize 
+            Maximum relative Entropy using the constraints
+            Default value is zero, which means that associated constraint has no effect.
+            </summary>
+        </member>
+        <member name="M:MrE_Engine.MrEExample10VariateGaussianCovarianceConstraint.#ctor(System.Int32,System.Int32,System.Double,System.Double,System.Double)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="source_variable_index">Index of the first variable</param>
+            <param name="destination_variable_index">Index of the second variable</param>
+            /// <param name="source_variable_mean">Mean of the first variable</param>
+            <param name="destination_variable_mean">Mean of the second variable</param>
+            <param name="covariance_value">Actual covariance value bwteeen variables</param>
+        </member>
+        <member name="M:MrE_Engine.MrEExample10VariateGaussianCovarianceConstraint.TryGetConstraintValueAt(System.Collections.Generic.List{System.Double},System.Double@)">
+            <summary>
+            A custom TryGetConstraintValueAt implementation.
+            </summary>
+            <param name="variables_values">The list of multivariate random vector coordinates</param>
+            <param name="constraint_value">The constraint value to be returned</param>
+            <returns>True when successfull</returns>
+        </member>
+        <member name="T:MrE_Engine.DistributionGaussian">
+            <summary>
+            A class for Gaussian distribution
+            </summary>
+        </member>
+        <member name="T:MrE_Engine.CustomDistributionBase">
+            <summary>
+            A base class for Probability distribution class
+            </summary>
+        </member>
+        <member name="M:MrE_Engine.CustomDistributionBase.#ctor">
+            <summary>
+            Constructor for CustomDistributionBase
+            </summary>
+        </member>
+        <member name="M:MrE_Engine.CustomDistributionBase.TryGetProbabilityDensityAt(System.Collections.Generic.List{System.Double},System.Double@)">
+            <summary>
+            TryGetProbabilityDensityAt returns the probability density function value at a given multivariate data point.
+            </summary>
+            <param name="variables_values">The list of multivariate random vector coordinates</param>
+            <param name="density_value">The probability distribution density value to be returned</param>
+            <returns>True when successfull</returns>
+        </member>
+        <member name="M:MrE_Engine.DistributionGaussian.#ctor(System.Double,System.Double)">
+            <summary>
+            Main constructor for our example distribution
+            </summary>
+        </member>
+        <member name="M:MrE_Engine.DistributionGaussian.TryGetProbabilityDensityAt(System.Collections.Generic.List{System.Double},System.Double@)">
+            <summary>
+            TryGetProbabilityDensityAt returns the probability density function value at a given multivariate data point.
+            </summary>
+            <param name="variables_values">The list of multivariate random vector coordinates</param>
+            <param name="density_value">The probability distribution density value to be returned</param>
+            <returns>True when successfull</returns>
+        </member>
+        <member name="T:MrE_Engine.IVariable">
+            <summary>
+            Interface for a random variable
+            </summary>
+        </member>
+        <member name="M:MrE_Engine.IVariable.GetRandomSample">
+            <summary>
+            Gets random sample
+            </summary>
+            <returns>A random value of a random variable</returns>
+        </member>
+        <member name="T:MrE_Engine.SigmaPoint">
+            <summary>
+            SigmaPoint class stores information for a Sigma point information.
+            The title is derived from the Unscented Kalman Filter, where it has a similar meaning.
+            </summary>
+        </member>
+        <member name="M:MrE_Engine.SigmaPoint.SetDeltaCumulativeDistance(System.Double,System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="delta_cumulation_distance"></param>
+            <param name="delta_cumulation_distance_index"></param>
+        </member>
+        <member name="M:MrE_Engine.SigmaPoint.#ctor">
+            <summary>
+            Constructor
+            </summary>
+        </member>
+        <member name="M:MrE_Engine.SigmaPoint.#ctor(System.Collections.Generic.List{System.Double},System.Double)">
+            <summary>
+            Constructor which accepts all vector coordinates and density value
+            </summary>
+            <param name="vector_coordinates">Sigma point vector's coordinate values</param>
+            <param name="density_value">Density value at current sigma point</param>
+        </member>
+        <member name="P:MrE_Engine.SigmaPoint.VectorCoordinates">
+            <summary>
+            Sigma point is really nothing more as a multivariate/multidimensional vector,
+            which is defined by its coordinates in each random variable axis.
+            </summary>
+        </member>
+        <member name="P:MrE_Engine.SigmaPoint.DensityValue">
+            <summary>
+            Probability density value at this Sigma point
+            </summary>
+        </member>
+        <member name="P:MrE_Engine.SigmaPoint.DeltaCumulation">
+            <summary>
+            Probability cumulative distribution delta produced by the sigma point
+            when compared to the shortest other sigma point
+            </summary>
+        </member>
+        <member name="P:MrE_Engine.SigmaPoint.DeltaCumulationDistance">
+            <summary>
+            The distance to the closest neighboring sigma point.
+            </summary>
+        </member>
+        <member name="P:MrE_Engine.SigmaPoint.DeltaCumulationDistanceIndex">
+            <summary>
+            The index to the closest neighboring sigma point.
+            </summary>
+        </member>
+        <member name="T:MrE_Engine.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:MrE_Engine.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:MrE_Engine.Properties.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="T:MrE_Engine.InferenceTask">
+            <summary>
+            A class for a single inference task
+            </summary>
+        </member>
+        <member name="M:MrE_Engine.InferenceTask.#ctor">
+            <summary>
+            Constructor
+            </summary>
+        </member>
+        <member name="M:MrE_Engine.InferenceTask.PopulateRandomSigmaPoint">
+            <summary>
+            Gets a random sigma point and populates the sigma points collection
+            </summary>
+            <returns>True when successfull</returns>
+        </member>
+        <member name="M:MrE_Engine.InferenceTask.IsSamplingConstraintSatisfied(MrE_Engine.SigmaPoint)">
+            <summary>
+            Does current sigma point satisfies the sampling constraint 
+            </summary>
+            <returns>True, if sampling constraint is satisfied. False, when the sampling constraint is violated.</returns>
+        </member>
+        <member name="M:MrE_Engine.InferenceTask.GetEvidenceAtLagrangeMultiplierChange(System.Double[],System.Int32,System.Double,System.Double@)">
+            <summary>
+            Gets a new scaled evidence value after a certain Lagrange multiplier
+            is updated with a new value.
+            </summary>
+            <param name="multipliers">Array of multipliers to gather evidence over</param>
+            <param name="index_to_check">Index of the multiplier to check</param>
+            <param name="value_to_check">A new value for the multiplier to check</param>
+            <param name="exp_evidence_scale">A new exponential scale for evidence candidate value</param>
+            <returns>A new evidence value. If no Lagrange multipliers or sigma points exist, returns 1</returns>
+        </member>
+        <member name="M:MrE_Engine.InferenceTask.DoPrecisionSamplingOverLagrangeMultipliers(System.Double[]@,System.Double,System.Int32,System.Double@,System.Boolean)">
+            <summary>
+            Samples over Lagrange multipliers
+            </summary>
+            <param name="multipliers"></param>
+            <param name="ratio_for_range"></param>
+            <param name="maximum_iterations"></param>
+            <param name="best_evidence_value"></param>
+            <param name="first_time"></param>
+        </member>
+        <member name="M:MrE_Engine.InferenceTask.Execute">
+            <summary>
+            Execute this task
+            </summary>
+            <returns>True when successfull</returns>
+        </member>
+        <member name="M:MrE_Engine.InferenceTask.AddVariable(MrE_Engine.CustomVariableBase)">
+            <summary>
+            Adds a new random variable instance to the internal collection
+            </summary>
+            <param name="variable">A new instance of random variable</param>
+        </member>
+        <member name="M:MrE_Engine.InferenceTask.AddVariableConstraint(MrE_Engine.CustomConstraintBase)">
+            <summary>
+            Adds a new constraint function to the internal collection and 
+            updates cache information on existing sigma points
+            </summary>
+            <param name="new_constraint">A new instance of constraint function</param>
+            <returns>True when successfull</returns>
+        </member>
+        <member name="P:MrE_Engine.InferenceTask.ExpEvidenceScale">
+             <summary>
+             This is evidence scale coefficient k, whose purpose is
+             to keep the evidence under the double precision.
+            Default is zero, which means no scale. The value of k, means that
+            the evidence value is multiplied by Exp[k*100].
+            Can be negative (for too big evidence value) or positive
+            for too small evidence numbers).
+             </summary>
+        </member>
+        <member name="P:MrE_Engine.InferenceTask.EnforcePositiveLagrangeMultipliers">
+            <summary>
+            Property EnforcePositiveLagrangeMultipliers
+            
+            </summary>
+        </member>
+        <member name="P:MrE_Engine.InferenceTask.MaxShiftsOfSigmaPoints">
+            <summary>
+            Property MaxShiftsOfSigmaPoints
+            
+            </summary>
+        </member>
+        <member name="P:MrE_Engine.InferenceTask.LastIterationOfLagrangeMultipliersShifts">
+            <summary>
+            Property LastIterationOfLagrangeMultipliersShifts
+            
+            </summary>
+        </member>
+        <member name="P:MrE_Engine.InferenceTask.VariableConstraints">
+            <summary>
+            Property VariableConstraints
+            
+            </summary>
+        </member>
+        <member name="P:MrE_Engine.InferenceTask.SigmaPoints">
+            <summary>
+            Property SigmaPoints
+            
+            </summary>
+        </member>
+        <member name="P:MrE_Engine.InferenceTask.JointPriorDistribution">
+            <summary>
+            Property JointPriorDistribution
+            
+            </summary>
+        </member>
+        <member name="P:MrE_Engine.InferenceTask.PrecisionOfLagrangeMultiplierAtZeroValue">
+            <summary>
+            Property PrecisionOfLagrangeMultiplierAtZeroValue
+            This defines a smallest step starting whe n iteration process starts 
+            from zero value of Lagrange multiplier.
+            </summary>
+        </member>
+        <member name="T:MrE_Engine.SigmaPointCollection">
+            <summary>
+            Collection which keeps SigmaPoint class instances.
+            </summary>
+        </member>
+        <member name="M:MrE_Engine.SigmaPointCollection.#ctor">
+            <summary>
+            Main constructor for our example distribution
+            </summary>
+        </member>
+        <member name="T:MrE_Engine.DistributionUniform">
+            <summary>
+            Uniform distribution is a default distribution at Maximum relative Entropy.
+            This class defaults to -1000 .. +1000 maximum variable range.
+            </summary>
+        </member>
+        <member name="M:MrE_Engine.Program.Main">
+            <summary>
+            The main entry point for the application.
+            </summary>
+        </member>
+        <member name="T:MrE_Engine.Form1">
+            <summary>
+            A sample test form
+            </summary>
+        </member>
+        <member name="M:MrE_Engine.Form1.#ctor">
+            <summary>
+            Constructor
+            </summary>
+        </member>
+        <member name="F:MrE_Engine.Form1.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:MrE_Engine.Form1.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:MrE_Engine.Form1.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:MrE_Engine.ConstraintsCollection">
+            <summary>
+            A class to store in-memory constraints collection
+            TODO: in the future move to interface to enable third party accessors 
+            </summary>
+        </member>
+        <member name="M:MrE_Engine.ConstraintsCollection.#ctor(MrE_Engine.SigmaPointCollection,System.Collections.Generic.List{MrE_Engine.CustomVariableBase},MrE_Engine.IProbabilityDistribution,MrE_Engine.InferenceTask)">
+            <summary>
+            Constructor
+            </summary>
+        </member>
+        <member name="M:MrE_Engine.ConstraintsCollection.ReplaceSigmaPointAtIndex(System.Int32,MrE_Engine.SigmaPoint)">
+            <summary>
+            Replaces an existing sigma point with a new instance
+            </summary>
+            <param name="index">Index of existing sigma point to be replaced</param>
+            <param name="sigma_point">A new sigma point to replace with</param>
+            <returns>True, if successfull</returns>
+        </member>
+        <member name="M:MrE_Engine.ConstraintsCollection.AppendNewSigmaPoint(MrE_Engine.SigmaPoint)">
+            <summary>
+            Appends an information for a new sigma point. 
+            Recalculates constraints values and updates global minimum information
+            </summary>
+            <param name="sigma_point">An instance of a new sigma point</param>
+            <returns>True when successfull, else at least one constraint value was NaN</returns>
+        </member>
+        <member name="M:MrE_Engine.ConstraintsCollection.AppendNewConstraint(MrE_Engine.CustomConstraintBase)">
+            <summary>
+            Appends a new constraint. If appending fails, the new constraints value is set to IsValid=false
+            </summary>
+            <param name="new_constraint"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MrE_Engine.ConstraintsCollection.GenerateSeries">
+            <summary>
+            Generates discrete values for the first variable in range -100 to 100.
+            Used for testing purposes.
+            </summary>
+        </member>
+        <member name="M:MrE_Engine.ConstraintsCollection.TryGenerateUniformSigmaPoints(System.Int32)">
+            <summary>
+            Tries to generates uniform sigma points for 
+            all variables in their defined ranges
+            </summary>
+            <param name="sigma_points_count">The number of sigma points to generate</param>
+            <returns></returns>
+        </member>
+        <member name="M:MrE_Engine.ConstraintsCollection.GenerateRandomSigmaPoint(MrE_Engine.SigmaPoint@)">
+            <summary>
+            Generates a random sigma point
+            </summary>
+            <param name="sigma_point"></param>
+            <returns>True, if successfull, false if new random value does not pass validation</returns>
+        </member>
+        <member name="M:MrE_Engine.ConstraintsCollection.ReplaceSigmaPoint(System.Int32,MrE_Engine.SigmaPoint)">
+            <summary>
+            Replaces global minimim sigma point with a new sigma point.
+            </summary>
+            <param name="new_sigma_point">A new sigma point to replace global minimum with</param>
+            <param name="destination_index">Index of destination sigma point to be replaced</param>
+            <returns>True, if successfull</returns>
+        </member>
+        <member name="M:MrE_Engine.ConstraintsCollection.IsValidForReplacingExisting(MrE_Engine.SigmaPoint,System.Int32@)">
+            <summary>
+            Checks whether a sigma point wins over existing global minimum. 
+            Also checks that the constraints boundaries are not violated.
+            </summary>
+            <param name="sigma_point">A new candidate sigma point to replace global minimum sigma point</param>
+            <param name="index_to_replace">Index of sigma point to be replaced</param>
+            <returns>True, if to replace global minimum sigma point</returns>
+        </member>
+        <member name="M:MrE_Engine.ConstraintsCollection.SquaredDistance(MrE_Engine.SigmaPoint,MrE_Engine.SigmaPoint)">
+            <summary>
+            Returns squared distance between two sigma points
+            </summary>
+            <param name="source_sigma_point">A sigma point to measure distance from</param>
+            <param name="destination_sigma_point">A sigma point to measure distance to</param>
+            <returns>Squared distance between two sigma points</returns>
+        </member>
+        <member name="P:MrE_Engine.ConstraintsCollection.JointPriorDistribution">
+            <summary>
+            Property JointPriorDistribution
+            
+            </summary>
+        </member>
+        <member name="T:MrE_Engine.CryptoRandom">
+            <summary>
+             Represents a pseudo-random number generator, a device that produces random data.
+            </summary>
+        </member>
+        <member name="M:MrE_Engine.CryptoRandom.#ctor">
+            <summary>
+             Creates an instance of the default implementation of a cryptographic random number generator that can be used to generate random data.
+            </summary>
+        </member>
+        <member name="M:MrE_Engine.CryptoRandom.GetNonZeroBytes(System.Byte[])">
+            
+             Fills an array of bytes with a cryptographically strong random sequence of nonzero values.
+            
+             The array to fill with cryptographically strong random nonzero bytes
+        </member>
+        <member name="M:MrE_Engine.CryptoRandom.GetBytes(System.Byte[])">
+            <summary>
+             Fills the elements of a specified array of bytes with random numbers.
+            </summary>
+            <param name="buffer">An array of bytes to contain random numbers.</param>
+        </member>
+        <member name="M:MrE_Engine.CryptoRandom.NextDouble">
+            <summary>
+             Returns a random number between 0.0 and 1.0.
+            </summary>
+        </member>
+        <member name="M:MrE_Engine.CryptoRandom.Next(System.Int32,System.Int32)">
+            <summary>
+             Returns a random number within the specified range.
+            </summary>
+            <param name="minValue">The inclusive lower bound of the random number returned.</param>
+            <param name="maxValue">The exclusive upper bound of the random number returned. maxValue must be greater than or equal to minValue.</param>
+        </member>
+        <member name="M:MrE_Engine.CryptoRandom.Next">
+            <summary>
+             Returns a nonnegative random number.
+            </summary>
+        </member>
+        <member name="M:MrE_Engine.CryptoRandom.Next(System.Int32)">
+            <summary>
+             Returns a nonnegative random number less than the specified maximum
+            </summary>
+            <param name="maxValue">The inclusive upper bound of the random number returned. maxValue must be greater than or equal 0</param>
+        </member>
+        <member name="T:MrE_Engine.MrEExampleForSanovTheoremInferenceTask">
+            <summary>
+            MrE example on how to solve Sanov's teorem using 
+            Maximum relative Entropy.
+            See Adom Giffin's paper at
+            Physica A388 (2009) 1610-1620, titled as
+            "From physics to economics: An econometric example using Maximum relative entropy"
+            </summary>
+        </member>
+        <member name="M:MrE_Engine.MrEExampleForSanovTheoremInferenceTask.IsSamplingConstraintSatisfied(MrE_Engine.SigmaPoint)">
+            <summary>
+            Does current sigma point satisfies the sampling constraint 
+            </summary>
+            <param name="sigma_point">Sigma point to validate</param>
+            <returns>True, if sampling constraint is satisfied. False, when the sampling constraint is violated.</returns>
+        </member>
+        <member name="T:MrE_Engine.MrEExampleForSanovTheoremConstraint">
+            <summary>
+            An example of variable function implementation
+            </summary>
+        </member>
+        <member name="M:MrE_Engine.MrEExampleForSanovTheoremConstraint.#ctor(System.Double,System.Double,System.Double,System.Double)">
+            <summary>
+            Constructor for MrEExampleForSanovTheoremConstraint
+            </summary>
+        </member>
+        <member name="M:MrE_Engine.MrEExampleForSanovTheoremConstraint.TryGetConstraintValueAt(System.Collections.Generic.List{System.Double},System.Double@)">
+            <summary>
+            A custom TryGetConstraintValueAt implementation.
+            </summary>
+            <param name="variables_values">The list of multivariate random vector coordinates</param>
+            <param name="constraint_value">The constraint value to be returned</param>
+            <returns>True when successfull</returns>
+        </member>
+        <member name="T:MrE_Engine.MrEExampleForSanovTheoremConstraint2">
+            <summary>
+            An example of variable function implementation
+            </summary>
+        </member>
+        <member name="M:MrE_Engine.MrEExampleForSanovTheoremConstraint2.#ctor(System.Double)">
+            <summary>
+            Constructor for MrEExampleForSanovTheoremConstraint
+            </summary>
+        </member>
+        <member name="M:MrE_Engine.MrEExampleForSanovTheoremConstraint2.TryGetConstraintValueAt(System.Collections.Generic.List{System.Double},System.Double@)">
+            <summary>
+            A custom TryGetConstraintValueAt implementation.
+            </summary>
+            <param name="variables_values">The list of multivariate random vector coordinates</param>
+            <param name="constraint_value">The constraint value to be returned</param>
+            <returns>True when successfull</returns>
+        </member>
+        <member name="T:MrE_Engine.MrEExampleForSanovTheoremDistribution">
+            <summary>
+            MrE example on how to solve Sanov's teorem using 
+            Maximum relative Entropy.
+            See Adom Giffin's paper at
+            Physica A388 (2009) 1610-1620, titled as
+            "From physics to economics: An econometric example using Maximum relative entropy"
+            </summary>
+        </member>
+        <member name="M:MrE_Engine.MrEExampleForSanovTheoremDistribution.#ctor(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Main constructor for our example distribution
+            </summary>
+        </member>
+        <member name="M:MrE_Engine.MrEExampleForSanovTheoremDistribution.TryGetProbabilityDensityAt(System.Collections.Generic.List{System.Double},System.Double@)">
+            <summary>
+            TryGetProbabilityDensityAt returns the probability density function value at a given multivariate data point.
+            </summary>
+            <param name="variables_values">The list of multivariate random vector coordinates</param>
+            <param name="density_value">The probability distribution density value to be returned</param>
+            <returns>True when successfull</returns>
+        </member>
+        <member name="T:MrE_Engine.Example1_CustomDistribution">
+            <summary>
+            An example of probability distribution function implementation
+            </summary>
+        </member>
+        <member name="M:MrE_Engine.Example1_CustomDistribution.#ctor">
+            <summary>
+            Main constructor for our example distribution
+            </summary>
+        </member>
+        <member name="M:MrE_Engine.Example1_CustomDistribution.TryGetProbabilityDensityAt(System.Collections.Generic.List{System.Double},System.Double@)">
+            <summary>
+            TryGetProbabilityDensityAt returns the probability density function value at a given multivariate data point.
+            </summary>
+            <param name="variables_values">The list of multivariate random vector coordinates</param>
+            <param name="density_value">The probability distribution density value to be returned</param>
+            <returns>True when successfull</returns>
+        </member>
+        <member name="T:MrE_Engine.Example1_CustomConstraint">
+            <summary>
+            An example of variable function implementation
+            </summary>
+        </member>
+        <member name="M:MrE_Engine.Example1_CustomConstraint.#ctor">
+            <summary>
+            Constructor for Example1_CustomConstraint
+            </summary>
+        </member>
+        <member name="M:MrE_Engine.Example1_CustomConstraint.TryGetConstraintValueAt(System.Collections.Generic.List{System.Double},System.Double@)">
+            <summary>
+            A custom TryGetConstraintValueAt implementation.
+            x^2+y^2+z^2+...-40*40=0
+            </summary>
+            <param name="variables_values">The list of multivariate random vector coordinates</param>
+            <param name="constraint_value">The constraint value to be returned</param>
+            <returns>True when successfull</returns>
+        </member>
+        <member name="T:MrE_Engine.CustomVariableBase">
+            <summary>
+            A class for CustomVariableBase
+            </summary>
+        </member>
+        <member name="M:MrE_Engine.CustomVariableBase.#ctor">
+            <summary>
+            Constructor
+            </summary>
+        </member>
+        <member name="M:MrE_Engine.CustomVariableBase.MrE_Engine#IVariable#GetRandomSample">
+            <summary>
+            Gets samples of the class instance
+            </summary>
+        </member>
+        <member name="M:MrE_Engine.CustomVariableBase.GetRandomSample">
+            <summary>
+            Gets random sample according to Normal distribution and 
+            value range boundaries taken into account
+            </summary>
+            <returns>A random value of a random variable</returns>
+        </member>
+        <member name="P:MrE_Engine.CustomVariableBase.MinValue">
+            <summary>
+            Property MinValue
+            </summary>
+        </member>
+        <member name="P:MrE_Engine.CustomVariableBase.MaxValue">
+            <summary>
+            Property MaxValue
+            </summary>
+        </member>
+        <member name="P:MrE_Engine.CustomVariableBase.StandardDeviation">
+            <summary>
+            Property StandardDeviation.
+            Standard deviation of Normal distribution to sample variable values from.
+            </summary>
+        </member>
+        <member name="P:MrE_Engine.CustomVariableBase.Mean">
+            <summary>
+            Property Mean
+            The mean of Normal distribution to sample variable values from.
+            </summary>
+        </member>
+    </members>
+</doc>
