@@ -48,7 +48,8 @@ maxValue = as.double(1)
 #cat("Variables count is ", .Call("GetVariablesCount"),"\n")
 .Call("AddNewConstraint",SanovTheoremConstraint ,new.env())
 #cat("Constraints count is ", .Call("GetConstraintsCount"),"\n")
-.Call("SetDistribution",SanovTheoremDistribution ,new.env(), as.integer(50000), SanovTheoremSamplingConstraint)
+.Call("SetDistribution",SanovTheoremDistribution, new.env(), as.integer(50000), SanovTheoremSamplingConstraint)
+
 .Call("GetLagrangeConstraintsSparsities")
 
 warnings()
