@@ -2,10 +2,10 @@
 #include <stdlib.h>
 #include <time.h>
 #include <math.h>
-#include <R.h>
-#include <Rdefines.h>
-#include <Rinternals.h>
-#include <Rmath.h>
+#include <F:\R\R302\include\R.h>
+#include <F:\R\R302\include\Rdefines.h>
+#include <F:\R\R302\include\Rinternals.h>
+#include <F:\R\R302\include\Rmath.h>
 
 #define MAXNUMBEROFCONSTRAINTS 100
 #define MAXNUMBEROFVARIABLES 100
@@ -26,7 +26,6 @@ typedef struct CustomConstraint
 {
    long SparsityNegativeVersusPositive;
    SEXP FunctionPointer;
-   SEXP EnvironmentPointer;
    double Values_at_sigma_points[MAXNUMBEROFSIGMAPOINTS];
    double LagrangeMultiplierValue;
    int IsValid; // 0 - invalid, other - valid
@@ -50,7 +49,7 @@ double GOLDENRATIO = 1.6180339887;
 
 static SEXP m_distribution_fun, m_distribution_fun_env, m_sampling_constraint_fun;
 
-static SEXP constraint_fun, constraint_env;
+static SEXP constraint_fun;
 static SEXP constraint_fun_internal;
 double get_constraint_value(double(*)(),double);
 
@@ -77,7 +76,6 @@ SEXP ConstructMrEEngine(void)
 	{
 		CustomConstraint cc = m_constraints[i];
 		cc.FunctionPointer = R_NilValue;
-		cc.EnvironmentPointer = R_NilValue;
 		cc.SparsityNegativeVersusPositive = 0;
 	    for(j=0;j<MAXNUMBEROFSIGMAPOINTS;j++)
 		   cc.Values_at_sigma_points[j] = 0;
@@ -165,7 +163,6 @@ SEXP DisposeMrEEngine(void)
 	{
 		CustomConstraint cc = m_constraints[i];
 		cc.FunctionPointer = R_NilValue;
-		cc.EnvironmentPointer = R_NilValue;
 		m_constraints[i] = cc;
 	}
 	free(m_variables);
@@ -191,8 +188,7 @@ SEXP AddNewConstraint(SEXP new_function, SEXP env)
 	long i = 0;
 	CustomConstraint cc;
 	cc.SparsityNegativeVersusPositive = 0;
-    cc.FunctionPointer = new_function;
-	cc.EnvironmentPointer = env;
+	cc.FunctionPointer = new_function;
 	for(i=0;i<MAXNUMBEROFSIGMAPOINTS;i++)
 		cc.Values_at_sigma_points[i] = 0;
 	cc.LagrangeMultiplierValue = 0;
@@ -208,16 +204,19 @@ double get_function_value_at_sigma_point_internal(double (*any_function)(SEXP),d
 	SEXP rlist;
 	SEXP coordinate_value;
 	
-    PROTECT(rlist = NEW_LIST(m_variables_count)); pc++;
+    	PROTECT(rlist = NEW_LIST(m_variables_count)); pc++;
 	
 	for(i=0;i<m_variables_count;i++)
 	{
-		PROTECT (coordinate_value = NEW_NUMERIC(1));
+		
+		PROTECT (coordinate_value = NEW_NUMERIC(1));pc++;
 		REAL(coordinate_value)[0] = coordinates[i];
 		SET_ELEMENT(rlist, i, coordinate_value);
-		UNPROTECT(1);		
-    }    
+		//SET_VECTOR_ELT(rlist, i, coordinate_value);
+		UNPROTECT(1);pc--;
+	}    
 	double res = any_function(rlist);
+	//double res = 0;
 	UNPROTECT(pc) ;
 	return res;
 }
@@ -226,7 +225,7 @@ double evalconstraintfun_internal(SEXP rargs)
 {
 	SEXP Rcall,result;	
 	PROTECT(Rcall = lang2(constraint_fun_internal,rargs));
-	PROTECT(result = eval(Rcall,constraint_env));
+	PROTECT(result = eval(Rcall,m_distribution_fun_env));
 	UNPROTECT(2);
 	return(REAL(result)[0]);
 }
@@ -286,6 +285,7 @@ void TryGenerateUniformSigmaPoints(void)
 	// Now we need to set density values and check for validity of sigma points
 	double evaldistributionfun_internal(SEXP);
 	double evalsamplingconstraintfun_internal(SEXP);
+	
 	long new_sigma_points_count = 0;
 	long invalid_count = 0;
 	for (k = 0; k < m_sigma_points_count; k++)
@@ -388,7 +388,6 @@ void TryGenerateUniformSigmaPoints(void)
 		CustomConstraint cc = m_constraints[k];			
 		
 		constraint_fun_internal = cc.FunctionPointer;
-		constraint_env = cc.EnvironmentPointer;
 		cc.SparsityNegativeVersusPositive = 0;
 		cc.LagrangeMultiplierValue = 0;
 	    cc.IsValid = 1; // 0 - invalid, other - valid
@@ -525,11 +524,16 @@ SEXP GetConstraintValueAtSigmaPoints(SEXP constraint_index, SEXP start_sigma_poi
 		SET_ELEMENT(rlist, i, value);
 		UNPROTECT(1);		
     }    
-	UNPROTECT(pc) ;
+	UNPROTECT(pc);
 	return rlist;
 }
 
-SEXP SetDistribution(SEXP distribution_function, SEXP env, SEXP max_sigma_points, SEXP sampling_constraint)
+SEXP SetDistribution(
+  SEXP distribution_function, 
+  SEXP env,
+  SEXP max_sigma_points, 
+  SEXP sampling_constraint
+  )
 {
 	m_distribution_fun = distribution_function;
 	m_distribution_fun_env = env;
@@ -702,7 +706,7 @@ double evalthefun(double x)
 	rargs = allocVector(REALSXP,1);
 	REAL(rargs)[0] = x;
 	PROTECT(Rcall = lang2(constraint_fun,rargs));
-	PROTECT(result = eval(Rcall,constraint_env));
+	PROTECT(result = eval(Rcall,m_distribution_fun_env));
 	UNPROTECT(2);
 	return(REAL(result)[0]);
 }
@@ -713,7 +717,6 @@ SEXP do_get_constraint(SEXP args,SEXP function,SEXP env)
 	SEXP answer;
 	double evalthefun(double);
 	constraint_fun = function;
-	constraint_env = env;
 	x = REAL(args)[0];
 	res = get_constraint_value(evalthefun,x);
 	PROTECT(answer = allocVector(REALSXP,1));
@@ -725,7 +728,6 @@ SEXP do_get_constraint(SEXP args,SEXP function,SEXP env)
 SEXP set_constraint(SEXP function, SEXP env)
 {
 	constraint_fun_internal = function;
-	constraint_env = env;
 	return (R_NilValue);
 }
 
